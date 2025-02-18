@@ -1,0 +1,7 @@
+machine,date,status
+Machine A,1/1/21 12:00:00 am,0
+Machine B,1/1/21 12:00:00 am,1
+Machine C,1/1/21 12:00:00 am,2
+Machine A,1/2/21 12:00:00 am,3
+Machine B,1/2/21 12:00:00 am,4
+Machine C,1/2/21 12:00:00 am,0

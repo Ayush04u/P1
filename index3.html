@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Status Map Chart | JSCharting</title>
+    <meta http-equiv="content-type" content="text-html; charset=utf-8" />
+
+    <!-- Include JSCharting library -->
+    <script type="text/javascript" src="https://cdn.jscharting.com/latest/jscharting.js"></script>
+    
+
+
+    <style>
+      /* Basic CSS for the chart container */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      #chartDiv {
+        max-width: 900px;
+        height: 210px;
+        margin: 20px auto;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Chart container -->
+    <div id="chartDiv"></div>
+
+    <script type="text/javascript">
+      // Wait for the JSCharting library to load
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof JSC !== 'undefined') {
+          // Define statuses and corresponding colors
+          var statuses = [
+            'OK',        // 0
+            'NO_WATER',  // 1
+            'DOWN',      // 2
+            'NO_BEANS',  // 3
+            'OFF'        // 4
+          ];
+          var palette = [
+            '#00C853',  // OK (Green)
+            '#00E5FF',  // NO_WATER (Cyan)
+            '#ff2a2e',  // DOWN (Red)
+            '#795548',  // NO_BEANS (Brown)
+            '#FFEA00'   // OFF (Yellow)
+          ];
+
+          // Static data
+          var data = [
+            { machine: 'Machine 1', date: '2025-01-01', status: 0 },
+            { machine: 'Machine 1', date: '2025-01-02', status: 1 },
+            { machine: 'Machine 1', date: '2025-01-03', status: 2 },
+            { machine: 'Machine 1', date: '2025-01-04', status: 3 },
+            { machine: 'Machine 1', date: '2025-01-05', status: 4 },
+            { machine: 'Machine 2', date: '2025-01-01', status: 1 },
+            { machine: 'Machine 2', date: '2025-01-02', status: 2 },
+            { machine: 'Machine 2', date: '2025-01-03', status: 3 },
+            { machine: 'Machine 2', date: '2025-01-04', status: 4 },
+            { machine: 'Machine 2', date: '2025-01-05', status: 0 }
+          ];
+
+          // Function to process data into series
+          function makeSeries(data) {
+            return JSC.nest()
+              .key('machine') // Group by machine
+              .key('date')    // Group by date
+              .pointRollup(function(key, val) {
+                var values = val[0];
+                return {
+                  x: new Date(values.date), // Convert date string to Date object
+                  y: values.machine,       // Machine name
+                  z: values.status,        // Status code
+                  attributes_status: statuses[values.status] // Status text
+                };
+              })
+              .series(data); // Create series from nested data
+          }
+
+          // Function to create palette ranges for the chart
+          function makePaletteRanges(palette) {
+            var ranges = [];
+            palette.forEach(function(item, i) {
+              ranges.push({
+                value: i, // Status code
+                color: item, // Corresponding color
+                legendEntry_value: statuses[i].replace(/_/g, ' ').toLowerCase() // Legend label
+              });
+            });
+            return ranges;
+          }
+
+          // Function to render the chart
+          function renderChart(series) {
+            JSC.chart('chartDiv', {
+              type: 'heatmap solid', // Heatmap chart type
+              debug: true, // Enable debug mode for development
+              legend: {
+                position: 'top left', // Legend position
+                defaultEntry: { icon_width: 10 } // Legend icon size
+              },
+              palette: {
+                pointValue: function(p) {
+                  return p.options('z'); // Use status code for color mapping
+                },
+                ranges: makePaletteRanges(palette) // Define palette ranges
+              },
+              defaultAxis: {
+                defaultTick: {
+                  line_visible: false, // Hide tick lines
+                  gridLine_visible: false // Hide grid lines
+                }
+              },
+              yAxis_scale_invert: true, // Invert Y-axis
+              xAxis_scale_type: 'time', // X-axis as time scale
+              defaultSeries_shape_innerPadding: 0.05, // Padding between heatmap cells
+              defaultPoint: {
+                outline_width: 0, // No outline for points
+                tooltip: '%seriesName <br>{%xValue:g} <br>Status: <b>%status</b>' // Tooltip format
+              },
+              series: series // Add processed series to the chart
+            });
+          }
+
+          // Process static data and render the chart
+          var series = makeSeries(data);
+          renderChart(series);
+        } else {
+          console.error('JSCharting library failed to load.');
+        }
+      });
+      
+    </script>
+    <script type="text/javascript" src="https://cdn.jscharting.com/latest/jscharting.js"></script>
+  </body>
+</html>

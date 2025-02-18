@@ -181,8 +181,8 @@ div#unplannedStopDonutChart .apexcharts-legend, div#plannedStopDonutChart .apexc
 }
 
 .average-speed-section {
-    width: 257px;
-    height: 257px;
+    width: 200px;
+    height: 192px;
     background: linear-gradient(314.05deg, #7754F6 1.55%, #B854F6 113.87%);
     box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.03);
     border-radius: 10px;

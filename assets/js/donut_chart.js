@@ -61,7 +61,7 @@ var option = {
                 offsetCenter: [0, '-15%'],
                 fontSize: 24, // Smaller font size
                 fontWeight: 'bolder',
-                formatter: '{value} °C',
+                formatter: '{value} KWH',
                 color: 'inherit'
             },
             data: [
